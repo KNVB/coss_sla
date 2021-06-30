@@ -2,7 +2,7 @@ require('dotenv-flow').config();
 const accessTokenSecret='SD@FD{S=*(^dsv$bm%dl&kf}';
 let cookierParser = require('cookie-parser');
 let express = require('express');
-
+let PublicAPI = require('./publicAPI.js');
 let app = express();
 let httpServerPort = process.env["HTTP_PORT"];
 //================================================================
@@ -14,16 +14,18 @@ let httpServerPort = process.env["HTTP_PORT"];
 let http =require('http');
 let httpServer= http.createServer(app);
 let publicAPIRouter= express.Router();
+let publicAPI=new PublicAPI();
 
 console.log(process.env.NODE_ENV+" Mode");
 console.log("DB server name="+process.env.DATABASE_HOST);
-
 //================================================================
 app.use(express.urlencoded({extended: true}));
 app.use(express.json()); // parse application/json, basically parse incoming Request Object as a JSON Object 
 app.use(cookierParser(accessTokenSecret)); //signed cookie key
 app.use('/publicAPI',publicAPIRouter);
 
+publicAPIRouter.get('/getSystemList',publicAPI.getSystemList);
+publicAPIRouter.get('/getCategoryList',publicAPI.getCategoryList);
 httpServer.listen(httpServerPort, function() {
     console.log('server up and running at %s port', httpServerPort);
 });
