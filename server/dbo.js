@@ -43,8 +43,8 @@ class DBO
 					sqlString +=",is_Solved_By_COSS";
 				}
 				sqlString=sqlString+") values ("+valuesString+")";
-				console.log(sqlString);
-				console.log(data);
+				//console.log(sqlString);
+				//console.log(data);
 				executeQuery(sqlString,data);
 				
 			}
