@@ -2,39 +2,43 @@ import { useEffect, useState } from "react";
 import Incident from "./Incident";
 import IncidentUtil from './IncidentUtil';
 export default function InputIncident(props) {
-  let incident = new Incident();
-  const [categoryList,setCategoryList]=useState([]);
-  const [incidentList, setIncidentDataList] = useState([incident]);
-  const [systemList,setSystemList]=useState([]);  
+  
+  const [categoryOptionList,setCategoryOptionList]=useState([]);
+  const [defaultIncident,setDefaultIncident]=useState();
+  const [incidentList, setIncidentDataList] = useState([]);
+  const [systemOptionList,setSystemOptionList]=useState([]);
+
   let row = [];
   let addRow = (e) => {
+    e.preventDefault();
     let temp = JSON.parse(JSON.stringify(incidentList));
-    temp.push(new Incident());
+    temp.push(defaultIncident);
     setIncidentDataList(temp);
   };
-  let updateBriefDesc=(e,index)=>{
+  let saveToDb=async(e)=>{
+    e.preventDefault();
+    let incidentUtil=new IncidentUtil();
+    incidentUtil.saveIncidentList(incidentList)
+    .then(saveResult=>{
+      if (saveResult.result){
+        alert("Incident Saved to Db successfully");
+      }
+    })
+  }
+  let updateChange=(e,index)=>{
     let temp = JSON.parse(JSON.stringify(incidentList)); 
-    temp[index].briefDesc=e.target.value;
-    setIncidentDataList(temp);  
-  }
-  let updateCompactData=(e,index)=>{
-    let temp = JSON.parse(JSON.stringify(incidentList));  
-    temp[index].compactData=e.target.value;
-    setIncidentDataList(temp);
-  }
-  let updateRefNo=(e,index)=>{
-    let temp = JSON.parse(JSON.stringify(incidentList));  
-    temp[index].refNo=e.target.value;
-    setIncidentDataList(temp);
-  }
-  let updateRemark=(e,index)=>{
-    let temp = JSON.parse(JSON.stringify(incidentList));
-    temp[index].remark=e.target.value;
+    if(e.target.name==="systemId"){
+      temp[index].systemId=Number(e.target.value);
+    }else {
+      temp[index][e.target.name]=e.target.value;
+    }
     setIncidentDataList(temp);
   }
   useEffect(()=>{
     let incidentUtil=new IncidentUtil();  
+    
     const getData = async () => {
+        let incident = new Incident();
         let temp=[];
         let categoryList=await incidentUtil.getCategoryList();
         for (let i=0;i<categoryList.length;i++){
@@ -44,7 +48,7 @@ export default function InputIncident(props) {
                 </option>
             )
         }
-        setCategoryList(temp);
+        setCategoryOptionList(temp);
         let systemList=await incidentUtil.getSystemList();
         temp=[];
         for (let i=0;i<systemList.length;i++){
@@ -54,45 +58,54 @@ export default function InputIncident(props) {
                 </option>
             )
         }
-        setSystemList(temp);
+        setSystemOptionList(temp);
+        incident.catId=categoryList[0].category_id;
+        incident.systemId=systemList[0].system_id;
+        setDefaultIncident(incident);
+        setIncidentDataList([incident]);
     };
     getData();
   },[])
   for (let i = 0; i < incidentList.length; i++) {
-    incident = incidentList[i];
+    let incident = incidentList[i];
     row.push(
       <tr key={"row_" + i}>
         <td>
           <input 
             name="refNo"
-            onChange={(e)=>{ updateRefNo(e,i)}} 
+            onChange={(e)=>{ updateChange(e,i)}} 
             required 
             type="text" 
             value={incident.refNo} />
         </td>
         <td>
             <select 
-                name="catId">
-                {categoryList}
+                name="catId"
+                onChange={(e)=>{ updateChange(e,i)}}
+                value={incident.catId}>
+                {categoryOptionList}
             </select>
         </td>
         <td>
-            <select name="systemId">
-                {systemList}
+            <select
+              name="systemId"
+              onChange={(e)=>{ updateChange(e,i)}}
+              value={incident.systemId}>
+                {systemOptionList}
             </select>
         </td>
 
         <td>
             <textarea 
                 name="briefDesc"
-                onChange={(e)=>{ updateBriefDesc(e,i)}} 
+                onChange={(e)=>{ updateChange(e,i)}} 
                 required 
                 value={incidentList.briefDesc} />
         </td>
         <td>
           <input
             name="compactData"
-            onChange={(e)=>{updateCompactData(e,i)}}
+            onChange={(e)=>{ updateChange(e,i)}}
             required
             type="text"
             value={incidentList.compactData}
@@ -101,7 +114,7 @@ export default function InputIncident(props) {
         <td>
             <textarea 
                 name="remark"
-                onChange={(e)=>{ updateRemark(e,i)}} 
+                onChange={(e)=>{ updateChange(e,i)}} 
                 required value={incidentList.remark} />
         </td>
       </tr>
@@ -109,7 +122,7 @@ export default function InputIncident(props) {
   }
 
   return (
-    <form>
+    <form method="post">
       <table border="1">
         <tbody>
           <tr>
@@ -125,8 +138,11 @@ export default function InputIncident(props) {
           </tr>
           {row}
           <tr>
-            <td colSpan="6">
+            <td colSpan="3">
               <button onClick={addRow}>Add Button</button>
+            </td>
+            <td colSpan="3">
+              <button onClick={saveToDb}>Save</button>
             </td>
           </tr>
         </tbody>

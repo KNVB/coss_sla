@@ -18,5 +18,13 @@ export default class IncidentUtil{
                 throw error;
             }
         }
+        this.saveIncidentList=async(incidentList)=>{
+            try{
+                let result=await Utility.fetchAPI(publicAPIPath+'/saveIncidentList','POST',incidentList);
+                return result;
+            } catch (error){
+                throw error;
+            }
+        }
     }
 }
