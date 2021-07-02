@@ -145,6 +145,11 @@ export default function InputIncident(props) {
               <button onClick={saveToDb}>Save</button>
             </td>
           </tr>
+          <tr>
+            <td colSpan="6">
+              <a href="/">Back to Main Menu</a>
+            </td>
+          </tr>
         </tbody>
       </table>
     </form>

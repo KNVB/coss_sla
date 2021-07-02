@@ -26,7 +26,9 @@ app.use('/publicAPI',publicAPIRouter);
 
 publicAPIRouter.get('/getSystemList',publicAPI.getSystemList);
 publicAPIRouter.get('/getCategoryList',publicAPI.getCategoryList);
+publicAPIRouter.post('/saveBaseCount',publicAPI.saveBaseCount);
 publicAPIRouter.post('/saveIncidentList',publicAPI.saveIncidentList);
+
 httpServer.listen(httpServerPort, function() {
     console.log('server up and running at %s port', httpServerPort);
 });

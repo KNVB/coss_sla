@@ -9,13 +9,26 @@ class DBO
         const connection = mysql.createConnection(dbConfig);
 
 		this.getCategoryList=async()=>{
-			let sqlString ="select * from incident_category order by category_name";
+			let sqlString ="select * from incident_category order by category_name desc";
 			return await executeQuery(sqlString);
 		}
 
 		this.getSystemList=async()=>{
 			let sqlString ="select * from system_concerned order by system_name";
 			return await executeQuery(sqlString);
+		}
+		this.saveBaseCount=async(systemBaseCountList)=>{
+			let data;
+			let sql="replace into system_base_count (system_id,cat_id,count) values (?,?,?)";
+			Object.keys(systemBaseCountList).forEach(systemId=>{
+				data=[systemId,"H",systemBaseCountList[systemId]["H"]];
+				executeQuery(sql,data);
+				data=[systemId,"P",systemBaseCountList[systemId]["P"]];
+				executeQuery(sql,data);
+				data=[systemId,"S",systemBaseCountList[systemId]["S"]];
+				executeQuery(sql,data);
+			})
+			return true;
 		}
 		this.saveIncidentList=async(incidentList)=>{
 			//console.log(incidentList);

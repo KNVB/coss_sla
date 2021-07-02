@@ -41,6 +41,22 @@ class PublicAPI{
 				dboObj.close();
 			};
         }
+        this.saveBaseCount=async(req,res)=>{
+            let dboObj=new DBO();
+            try{
+                let result=await dboObj.saveBaseCount(req.body);
+                res.status(200).json({result:result})
+            }catch (error){
+                console.log("Something wrong when saving system base count :"+error.stack);
+                res.status(500).json({
+                    status: 'error',
+                    message: error,
+                });
+            }
+            finally{
+				dboObj.close();
+			};
+        }
         this.saveIncidentList=async(req,res)=>{
             let dboObj=new DBO();
             try{
