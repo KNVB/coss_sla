@@ -24,8 +24,9 @@ app.use(express.json()); // parse application/json, basically parse incoming Req
 app.use(cookierParser(accessTokenSecret)); //signed cookie key
 app.use('/publicAPI',publicAPIRouter);
 
-publicAPIRouter.get('/getSystemList',publicAPI.getSystemList);
+publicAPIRouter.get('/getCategoryCount',publicAPI.getCategoryCount);
 publicAPIRouter.get('/getCategoryList',publicAPI.getCategoryList);
+publicAPIRouter.get('/getSystemList',publicAPI.getSystemList);
 publicAPIRouter.post('/saveBaseCount',publicAPI.saveBaseCount);
 publicAPIRouter.post('/saveIncidentList',publicAPI.saveIncidentList);
 

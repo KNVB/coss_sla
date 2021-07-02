@@ -1,6 +1,27 @@
 class PublicAPI{
     constructor(){
         let DBO=require("./dbo.js");
+        this.getCategoryCount=async(req,res)=>{
+            let dboObj=new DBO();
+            let finalResult=[];
+            try{
+                console.log(req.query.year);
+                let results=await dboObj.getCategoryCount(req.query.year,req.query.month);
+                results.forEach(result => {
+                    finalResult.push({
+                        base_count_since_2007:result.base_count_since_2007,
+                        cat_name:result.category_name,
+                        cat_count:result.cat_count
+                    }); 
+                });
+                res.send(finalResult); 
+            }catch (error){
+                console.log("Something wrong when getting category count:"+error.stack);
+            }
+            finally{
+				dboObj.close();
+			};            
+        }
         this.getCategoryList=async(req,res)=>{
             let dboObj=new DBO();
             let finalResult=[];
