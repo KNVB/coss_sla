@@ -41,18 +41,18 @@ export default function InputSystemBaseCount(props) {
                     <td>
                         <input
                             min={0}
-                            onChange={(e)=>{setValue(e,systemId,"P")}}
-                            required
-                            type="number"
-                            value={systemBaseCountList[systemId]["P"]} />
-                    </td>
-                    <td>
-                        <input
-                            min={0}
                             onChange={(e)=>{setValue(e,systemId,"S")}}
                             required
                             type="number"
                             value={systemBaseCountList[systemId]["S"]} />
+                    </td>
+                    <td>
+                        <input
+                            min={0}
+                            onChange={(e)=>{setValue(e,systemId,"P")}}
+                            required
+                            type="number"
+                            value={systemBaseCountList[systemId]["P"]} />
                     </td>
                 </tr>
             );

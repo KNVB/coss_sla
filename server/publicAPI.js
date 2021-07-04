@@ -1,26 +1,33 @@
 class PublicAPI{
     constructor(){
         let DBO=require("./dbo.js");
-        this.getCategoryCount=async(req,res)=>{
+        this.getIncidentStat=async(req,res)=>{
+            let actionTypeSummary={};
             let dboObj=new DBO();
-            let finalResult=[];
+
+            let finalResult={};
+            let summaryResult=[];
             try{
-                console.log(req.query.year);
-                let results=await dboObj.getCategoryCount(req.query.year,req.query.month);
+                let results=await dboObj.getIncidentSummary(req.query.year,req.query.month);
                 results.forEach(result => {
-                    finalResult.push({
-                        base_count_since_2007:result.base_count_since_2007,
-                        cat_name:result.category_name,
-                        cat_count:result.cat_count
-                    }); 
+                    summaryResult.push({
+                        category_name:result.category_name,
+                        since_2007:Number(result.since_2007),
+                        this_month:Number(result.this_month)    
+                    })                    
                 });
+                results=await dboObj.getActionTypeSummary(req.query.year,req.query.month);
+                actionTypeSummary.P=results[0].P;
+                actionTypeSummary.R=results[0].R;
+                finalResult.actionTypeSummary=actionTypeSummary;
+                finalResult.summary=summaryResult;
                 res.send(finalResult); 
             }catch (error){
                 console.log("Something wrong when getting category count:"+error.stack);
             }
             finally{
 				dboObj.close();
-			};            
+			};
         }
         this.getCategoryList=async(req,res)=>{
             let dboObj=new DBO();

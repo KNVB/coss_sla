@@ -8,23 +8,28 @@ class DBO
 		const mysql = require('mysql2');
         const connection = mysql.createConnection(dbConfig);
 
-		this.getCategoryCount=async(year,month)=>{
-			let search =year*100+Number(month);
-			
-			let sqlString="select base_count_since_2007,category_name,IFNULL(b.basecount, 0)as cat_count ";
-			sqlString+="from incident_category a left join ";
-			sqlString+="(	select count(*) as basecount ,category_id";
-			sqlString+="	from incident b ";
-			sqlString+="	where reference_no like ?";
-			sqlString+="	group by category_id ";
-			sqlString+=") b on a.category_id=b.category_id";
-			
-			return await executeQuery(sqlString,['%' + search + '%']);
-		}
 		this.getCategoryList=async()=>{
 			let sqlString ="select * from incident_category order by category_name desc";
 			return await executeQuery(sqlString);
+		}
+		this.getActionTypeSummary=async(year,month)=>{
+			let search =year*100+Number(month);
+			let sqlString="select sum(case when action_type='P' then 1 else 0 end) as P,";
+			sqlString+="sum(case when action_type='R' then 1 else 0 end) as R ";
+			sqlString+="from incident ";
+			sqlString+="where reference_no like ?";
+			return await executeQuery(sqlString,[search+"%"]);
 		}		
+		this.getIncidentSummary=async(year,month)=>{
+			let search =year*100+Number(month);
+			let sqlString="SELECT category_name,";
+			sqlString+="sum(case when month = ? then count else 0 end) as this_month,";
+			sqlString+="sum(case when month < ? then count else 0 end) as since_2007 ";
+			sqlString+="FROM incident_summary a inner join incident_category b ";
+			sqlString+="on a.category_id=b.category_id ";
+			sqlString+="group by a.category_id";			
+			return await executeQuery(sqlString,[search,search]);
+		}
 		this.getSystemList=async()=>{
 			let sqlString ="select * from system_concerned order by system_name";
 			return await executeQuery(sqlString);
