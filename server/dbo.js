@@ -7,11 +7,7 @@ class DBO
 	
 		const mysql = require('mysql2');
         const connection = mysql.createConnection(dbConfig);
-
-		this.getCategoryList=async()=>{
-			let sqlString ="select * from incident_category order by category_name desc";
-			return await executeQuery(sqlString);
-		}
+		
 		this.getActionTypeSummary=async(year,month)=>{
 			let search =year*100+Number(month);
 			let sqlString="select sum(case when action_type='P' then 1 else 0 end) as P,";
@@ -19,6 +15,13 @@ class DBO
 			sqlString+="from incident ";
 			sqlString+="where reference_no like ?";
 			return await executeQuery(sqlString,[search+"%"]);
+		}
+		this.getA1SystemServicePerformanceSummary=async(year,month)=>{
+			return await this.getServicePerformanceSummary(year,month,'Y');
+		}
+		this.getCategoryList=async()=>{
+			let sqlString ="select * from incident_category order by category_name desc";
+			return await executeQuery(sqlString);
 		}		
 		this.getIncidentSummary=async(year,month)=>{
 			let search =year*100+Number(month);
@@ -29,6 +32,28 @@ class DBO
 			sqlString+="on a.category_id=b.category_id ";
 			sqlString+="group by a.category_id";			
 			return await executeQuery(sqlString,[search,search]);
+		}
+		this.getIsSolvedByCOSSSummary=async(year,month)=>{
+			let search =year*100+Number(month);
+			let sqlString="select count(*)  as total,";
+			sqlString+="sum(case when  left(right(reference_no,5),4) between 800 and 1800 then 1 else 0 end) as in_office_hour ";
+			sqlString+="from  incident where reference_no like ? and is_solved_by_coss ='Yes'";
+			return await executeQuery(sqlString,[search+"%"]);
+		}
+		this.getNonA1SystemServicePerformanceSummary=async(year,month)=>{
+			return await this.getServicePerformanceSummary(year,month,'N');
+		}
+		this.getServicePerformanceSummary=async(year,month,isA1System)=>{
+			let search =year*100+Number(month);
+			let sqlString="select system_name,";
+			sqlString+="sum(case when category_id='H' then 1 else 0 end) as H,";
+            sqlString+="sum(case when category_id='S' then 1 else 0 end) as S,";
+            sqlString+="sum(case when category_id='P' then 1 else 0 end) as P ";
+			sqlString+="from system_concerned a left join incident b on a. system_id=b.system_id and ";
+			sqlString+="reference_no like ? ";
+			sqlString+="where is_A1_System=? ";
+			sqlString+="group by system_name";
+			return await executeQuery(sqlString,[search+"%",isA1System]);
 		}
 		this.getSystemList=async()=>{
 			let sqlString ="select * from system_concerned order by system_name";

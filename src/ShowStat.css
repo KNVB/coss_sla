@@ -1,0 +1,9 @@
+.trouble{
+    writing-mode: vertical-rl;
+    text-orientation:sideways-right;
+    transform: rotate(180deg);
+}
+td:not(:first-of-type){
+    text-align: center;
+    min-width:50px
+}

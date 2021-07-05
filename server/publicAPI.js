@@ -6,24 +6,55 @@ class PublicAPI{
             let dboObj=new DBO();
 
             let finalResult={};
-            let summaryResult=[];
+            let isSolvedByCOSSSummary={};
+            let a1SystemServicePerformanceSummary=[];
+            let nonA1SystemServicePerformanceSummary=[];
+            let incidentSummary=[];
             try{
                 let results=await dboObj.getIncidentSummary(req.query.year,req.query.month);
                 results.forEach(result => {
-                    summaryResult.push({
+                    incidentSummary.push({
                         category_name:result.category_name,
                         since_2007:Number(result.since_2007),
                         this_month:Number(result.this_month)    
                     })                    
                 });
                 results=await dboObj.getActionTypeSummary(req.query.year,req.query.month);
-                actionTypeSummary.P=results[0].P;
-                actionTypeSummary.R=results[0].R;
+                actionTypeSummary.P=Number(results[0].P);
+                actionTypeSummary.R=Number(results[0].R);
+                results=await dboObj.getIsSolvedByCOSSSummary(req.query.year,req.query.month);
+                isSolvedByCOSSSummary.total=Number(results[0].total);
+                isSolvedByCOSSSummary.in_office_hour=Number(results[0].in_office_hour);
+                results=await dboObj.getA1SystemServicePerformanceSummary(req.query.year,req.query.month);
+                results.forEach(result => {
+                    a1SystemServicePerformanceSummary.push(
+                        {
+                            system_name:result.system_name,
+                            H:Number(result.H),
+                            S:Number(result.S),
+                            P:Number(result.P),
+                        }
+                    )
+                });
+                results=await dboObj.getNonA1SystemServicePerformanceSummary(req.query.year,req.query.month);
+                results.forEach(result => {
+                    nonA1SystemServicePerformanceSummary.push(
+                        {
+                            system_name:result.system_name,
+                            H:Number(result.H),
+                            S:Number(result.S),
+                            P:Number(result.P),
+                        }
+                    )
+                });
                 finalResult.actionTypeSummary=actionTypeSummary;
-                finalResult.summary=summaryResult;
+                finalResult.a1SystemServicePerformanceSummary= a1SystemServicePerformanceSummary;
+                finalResult.nonA1SystemServicePerformanceSummary=nonA1SystemServicePerformanceSummary;
+                finalResult.isSolvedByCOSSSummary=isSolvedByCOSSSummary;
+                finalResult.incidentSummary=incidentSummary;
                 res.send(finalResult); 
             }catch (error){
-                console.log("Something wrong when getting category count:"+error.stack);
+                console.log("Something wrong when getting incident statistic:"+error.stack);
             }
             finally{
 				dboObj.close();
