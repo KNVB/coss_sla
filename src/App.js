@@ -4,7 +4,7 @@ import InputIncident from './InputIncident';
 import InputSystemBaseCount from './InputSystemBaseCount';
 import ListIncident from './ListIncident';
 import MainMenu from './MainMenu';
-import ShowStat from './ShowStat';
+import ShowStat from './showStat/ShowStat';
 function App() {
   return (
     <Router>

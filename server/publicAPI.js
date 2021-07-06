@@ -11,6 +11,7 @@ class PublicAPI{
             let nonA1SystemServicePerformanceSummary=[];
             let incidentSummary=[];
             try{
+                /*
                 let results=await dboObj.getIncidentSummary(req.query.year,req.query.month);
                 results.forEach(result => {
                     incidentSummary.push({
@@ -19,7 +20,8 @@ class PublicAPI{
                         this_month:Number(result.this_month)    
                     })                    
                 });
-                results=await dboObj.getActionTypeSummary(req.query.year,req.query.month);
+                */
+                let results=await dboObj.getActionTypeSummary(req.query.year,req.query.month);
                 actionTypeSummary.P=Number(results[0].P);
                 actionTypeSummary.R=Number(results[0].R);
                 results=await dboObj.getIsSolvedByCOSSSummary(req.query.year,req.query.month);
@@ -31,8 +33,11 @@ class PublicAPI{
                         {
                             system_name:result.system_name,
                             H:Number(result.H),
+                            H_PRE:Number(result.H_pre),
                             S:Number(result.S),
+                            S_PRE:Number(result.S_pre),
                             P:Number(result.P),
+                            P_PRE:Number(result.P_pre),
                         }
                     )
                 });
@@ -42,8 +47,11 @@ class PublicAPI{
                         {
                             system_name:result.system_name,
                             H:Number(result.H),
+                            H_PRE:Number(result.H_pre),
                             S:Number(result.S),
+                            S_PRE:Number(result.S_pre),
                             P:Number(result.P),
+                            P_PRE:Number(result.P_pre),
                         }
                     )
                 });

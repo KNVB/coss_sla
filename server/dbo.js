@@ -25,13 +25,17 @@ class DBO
 		}		
 		this.getIncidentSummary=async(year,month)=>{
 			let search =year*100+Number(month);
-			let sqlString="SELECT category_name,";
-			sqlString+="sum(case when month = ? then count else 0 end) as this_month,";
-			sqlString+="sum(case when month < ? then count else 0 end) as since_2007 ";
-			sqlString+="FROM incident_summary a inner join incident_category b ";
-			sqlString+="on a.category_id=b.category_id ";
-			sqlString+="group by a.category_id";			
-			return await executeQuery(sqlString,[search,search]);
+			let sqlString ="select ";
+			sqlString+="system_name,";
+			sqlString+="sum(case when month>=? then h_count else 0 end) as H,";
+			sqlString+="sum(case when month<? then h_count else 0 end) as H_pre,";
+			sqlString+="sum(case when month>=? then s_count else 0 end) as S,";
+			sqlString+="sum(case when month<? then s_count else 0 end) as S_pre,";
+			sqlString+="sum(case when month>=? then p_count else 0 end) as P,";
+			sqlString+="sum(case when month<? then p_count else 0 end) as P_pre ";
+			sqlString+="from incident_summary a inner join system_concerned b on a.system_id=b.system_id ";
+			sqlString+="group by a.system_id,system_name";			
+			return await executeQuery(sqlString,[search,search,search,search,search,search]);
 		}
 		this.getIsSolvedByCOSSSummary=async(year,month)=>{
 			let search =year*100+Number(month);
@@ -45,15 +49,18 @@ class DBO
 		}
 		this.getServicePerformanceSummary=async(year,month,isA1System)=>{
 			let search =year*100+Number(month);
-			let sqlString="select system_name,";
-			sqlString+="sum(case when category_id='H' then 1 else 0 end) as H,";
-            sqlString+="sum(case when category_id='S' then 1 else 0 end) as S,";
-            sqlString+="sum(case when category_id='P' then 1 else 0 end) as P ";
-			sqlString+="from system_concerned a left join incident b on a. system_id=b.system_id and ";
-			sqlString+="reference_no like ? ";
-			sqlString+="where is_A1_System=? ";
-			sqlString+="group by system_name";
-			return await executeQuery(sqlString,[search+"%",isA1System]);
+			let sqlString ="select ";
+			sqlString+="system_name,";
+			sqlString+="sum(case when month>=? then h_count else 0 end) as H,";
+			sqlString+="sum(case when month<? then h_count else 0 end) as H_pre,";
+			sqlString+="sum(case when month>=? then s_count else 0 end) as S,";
+			sqlString+="sum(case when month<? then s_count else 0 end) as S_pre,";
+			sqlString+="sum(case when month>=? then p_count else 0 end) as P,";
+			sqlString+="sum(case when month<? then p_count else 0 end) as P_pre ";
+			sqlString+="from incident_summary a inner join system_concerned b on a.system_id=b.system_id ";
+			sqlString+="where is_A1_System=?";
+			sqlString+="group by a.system_id,system_name";
+			return await executeQuery(sqlString,[search,search,search,search,search,search,isA1System]);
 		}
 		this.getSystemList=async()=>{
 			let sqlString ="select * from system_concerned order by system_name";
