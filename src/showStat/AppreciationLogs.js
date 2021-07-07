@@ -16,9 +16,7 @@ export default function AppreciationLogs(props) {
                         <td>{props.actionTypeSummary.P}</td>
                         <td>{props.actionTypeSummary.R}</td>
                         <td>
-                            {Number(
-                                props.actionTypeSummary.P / props.actionTypeSummary.R
-                            ).toFixed(2) + ":1"}
+                            {props.actionTypeSummary.actionTypeRatio}
                         </td>
                     </tr>
                 </tbody>
@@ -41,8 +39,7 @@ export default function AppreciationLogs(props) {
                         <td>{props.actionTypeSummary.P + props.actionTypeSummary.R}</td>
                         <td>{props.isSolvedByCOSSSummary.in_office_hour}</td>
                         <td>
-                            {props.isSolvedByCOSSSummary.total -
-                                props.isSolvedByCOSSSummary.in_office_hour}
+                            {props.isSolvedByCOSSSummary.non_office_hour}
                         </td>
                         <td>{props.isSolvedByCOSSSummary.total}</td>
                     </tr>

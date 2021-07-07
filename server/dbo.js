@@ -62,12 +62,12 @@ class DBO
 		this.getServicePerformanceSummary=async(search,isA1System)=>{
 			let sqlString ="select ";
 			sqlString+="system_name,";
-			sqlString+="sum(case when month>=? then h_count else 0 end) as H,";
-			sqlString+="sum(case when month<? then h_count else 0 end) as H_pre,";
-			sqlString+="sum(case when month>=? then s_count else 0 end) as S,";
-			sqlString+="sum(case when month<? then s_count else 0 end) as S_pre,";
-			sqlString+="sum(case when month>=? then p_count else 0 end) as P,";
-			sqlString+="sum(case when month<? then p_count else 0 end) as P_pre ";
+			sqlString+="sum(case when month = ? then h_count else 0 end) as H,";
+			sqlString+="sum(case when month < ? then h_count else 0 end) as H_pre,";
+			sqlString+="sum(case when month = ? then s_count else 0 end) as S,";
+			sqlString+="sum(case when month < ? then s_count else 0 end) as S_pre,";
+			sqlString+="sum(case when month = ? then p_count else 0 end) as P,";
+			sqlString+="sum(case when month < ? then p_count else 0 end) as P_pre ";
 			sqlString+="from incident_summary a inner join system_concerned b on a.system_id=b.system_id ";
 			sqlString+="where is_A1_System=?";
 			sqlString+="group by a.system_id,system_name";
