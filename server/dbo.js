@@ -26,16 +26,31 @@ class DBO
 		this.getIncidentSummary=async(year,month)=>{
 			let search =year*100+Number(month);
 			let sqlString ="select ";
-			sqlString+="system_name,";
-			sqlString+="sum(case when month>=? then h_count else 0 end) as H,";
-			sqlString+="sum(case when month<? then h_count else 0 end) as H_pre,";
-			sqlString+="sum(case when month>=? then s_count else 0 end) as S,";
-			sqlString+="sum(case when month<? then s_count else 0 end) as S_pre,";
-			sqlString+="sum(case when month>=? then p_count else 0 end) as P,";
-			sqlString+="sum(case when month<? then p_count else 0 end) as P_pre ";
-			sqlString+="from incident_summary a inner join system_concerned b on a.system_id=b.system_id ";
-			sqlString+="group by a.system_id,system_name";			
-			return await executeQuery(sqlString,[search,search,search,search,search,search]);
+			sqlString+="case when h_count_sum is null then 0 else h_count_sum end as h_count_sum,h_count_sum_pre,";
+			sqlString+="case when p_count_sum is null then 0 else p_count_sum end as p_count_sum,p_count_sum_pre,";
+			sqlString+="case when s_count_sum is null then 0 else s_count_sum end as s_count_sum,s_count_sum_pre ";
+			sqlString+="from ";
+			sqlString+="(";
+			sqlString+="	SELECT"
+			sqlString+="		sum(s_count) AS s_count_sum,";
+			sqlString+="		sum(h_count) AS h_count_sum,";
+			sqlString+="		sum(p_count) AS p_count_sum";
+			sqlString+="	FROM"
+			sqlString+="		incident_summary";
+			sqlString+="	WHERE";
+			sqlString+="		month = ?";
+			sqlString+=") as t1,";
+			sqlString+="(";
+			sqlString+="SELECT";
+			sqlString+="		sum(s_count) AS s_count_sum_pre,";
+			sqlString+="		sum(h_count) AS h_count_sum_pre,";
+			sqlString+="		sum(p_count) AS p_count_sum_pre";
+			sqlString+="	FROM";
+			sqlString+="		incident_summary";
+			sqlString+="	WHERE";
+			sqlString+="		month < ?";
+			sqlString+=") as t2";
+			return await executeQuery(sqlString,[search,search]);
 		}
 		this.getIsSolvedByCOSSSummary=async(year,month)=>{
 			let search =year*100+Number(month);

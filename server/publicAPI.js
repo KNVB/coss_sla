@@ -9,19 +9,20 @@ class PublicAPI{
             let isSolvedByCOSSSummary={};
             let a1SystemServicePerformanceSummary=[];
             let nonA1SystemServicePerformanceSummary=[];
-            let incidentSummary=[];
+            let incidentSummary={};
             try{
-                /*
+                
                 let results=await dboObj.getIncidentSummary(req.query.year,req.query.month);
                 results.forEach(result => {
-                    incidentSummary.push({
-                        category_name:result.category_name,
-                        since_2007:Number(result.since_2007),
-                        this_month:Number(result.this_month)    
-                    })                    
+                    incidentSummary.h_count_sum=Number(result.h_count_sum);
+                    incidentSummary.h_count_sum_pre=Number(result.h_count_sum_pre);
+                    incidentSummary.p_count_sum=Number(result.p_count_sum);
+                    incidentSummary.p_count_sum_pre=Number(result.p_count_sum_pre);
+                    incidentSummary.s_count_sum=Number(result.s_count_sum);
+                    incidentSummary.s_count_sum_pre=Number(result.s_count_sum_pre);
                 });
-                */
-                let results=await dboObj.getActionTypeSummary(req.query.year,req.query.month);
+                
+                results=await dboObj.getActionTypeSummary(req.query.year,req.query.month);
                 actionTypeSummary.P=Number(results[0].P);
                 actionTypeSummary.R=Number(results[0].R);
                 results=await dboObj.getIsSolvedByCOSSSummary(req.query.year,req.query.month);
