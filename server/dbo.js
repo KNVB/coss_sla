@@ -7,24 +7,22 @@ class DBO
 	
 		const mysql = require('mysql2');
         const connection = mysql.createConnection(dbConfig);
-		
-		this.getActionTypeSummary=async(year,month)=>{
-			let search =year*100+Number(month);
+		this.getA1SystemServicePerformanceSummary=async(search)=>{
+			return await this.getServicePerformanceSummary(search,'Y');
+		}
+		this.getActionTypeSummary=async(search)=>{
 			let sqlString="select sum(case when action_type='P' then 1 else 0 end) as P,";
 			sqlString+="sum(case when action_type='R' then 1 else 0 end) as R ";
 			sqlString+="from incident ";
 			sqlString+="where reference_no like ?";
 			return await executeQuery(sqlString,[search+"%"]);
 		}
-		this.getA1SystemServicePerformanceSummary=async(year,month)=>{
-			return await this.getServicePerformanceSummary(year,month,'Y');
-		}
+		
 		this.getCategoryList=async()=>{
 			let sqlString ="select * from incident_category order by category_name desc";
 			return await executeQuery(sqlString);
 		}		
-		this.getIncidentSummary=async(year,month)=>{
-			let search =year*100+Number(month);
+		this.getIncidentSummary=async(search)=>{
 			let sqlString ="select ";
 			sqlString+="case when h_count_sum is null then 0 else h_count_sum end as h_count_sum,h_count_sum_pre,";
 			sqlString+="case when p_count_sum is null then 0 else p_count_sum end as p_count_sum,p_count_sum_pre,";
@@ -52,18 +50,16 @@ class DBO
 			sqlString+=") as t2";
 			return await executeQuery(sqlString,[search,search]);
 		}
-		this.getIsSolvedByCOSSSummary=async(year,month)=>{
-			let search =year*100+Number(month);
+		this.getIsSolvedByCOSSSummary=async(search)=>{
 			let sqlString="select count(*)  as total,";
 			sqlString+="sum(case when  left(right(reference_no,5),4) between 800 and 1800 then 1 else 0 end) as in_office_hour ";
 			sqlString+="from  incident where reference_no like ? and is_solved_by_coss ='Yes'";
 			return await executeQuery(sqlString,[search+"%"]);
 		}
-		this.getNonA1SystemServicePerformanceSummary=async(year,month)=>{
-			return await this.getServicePerformanceSummary(year,month,'N');
+		this.getNonA1SystemServicePerformanceSummary=async(search)=>{
+			return await this.getServicePerformanceSummary(search,'N');
 		}
-		this.getServicePerformanceSummary=async(year,month,isA1System)=>{
-			let search =year*100+Number(month);
+		this.getServicePerformanceSummary=async(search,isA1System)=>{
 			let sqlString ="select ";
 			sqlString+="system_name,";
 			sqlString+="sum(case when month>=? then h_count else 0 end) as H,";
