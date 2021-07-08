@@ -62,7 +62,7 @@ class PublicAPI{
                     actionTypeSummary:await this.getActionTypeSummary(dboObj,search),
                     incidentSummary:await this.getIncidentSummary(dboObj,search),
                     isSolvedByCOSSSummary:await this.getIsSolvedByCOSSSummary(dboObj,search),
-                    logs:[],
+                    logs:await this.getAppreciationLogs(dboObj,search,year,month),
                     nonA1SystemServicePerformanceSummary:await this.getNonA1SystemServicePerformanceSummary(dboObj,search)
                 }
                 return statData;
@@ -118,6 +118,23 @@ class PublicAPI{
             ).toFixed(2) + ":1";
             actionTypeSummary.total= actionTypeSummary.P + actionTypeSummary.R;
             return actionTypeSummary;
+        }
+        this.getAppreciationLogs=async(dboObj,search,year,month)=>{
+            let endDate=new Date(year,month,0);
+            let logs=[];
+            endDate=(search*100+endDate.getDate())+' 2215H - 0830H';
+            let queryResult=await dboObj.getAppreciationLogs(search,endDate);
+            queryResult.forEach(result => {
+                logs.push({
+                    brief_desc:result.brief_desc,
+                    category_name:result.category_name,
+                    compact:result.compact,
+                    reference_no:result.reference_no,
+                    remark:result.remark,
+                    system_name:result.system_name
+                })
+            });
+            return logs
         }
         this.getIncidentSummary=async(dboObj,search)=>{
             let queryResult=await dboObj.getIncidentSummary(search);

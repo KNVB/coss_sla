@@ -17,7 +17,26 @@ class DBO
 			sqlString+="where reference_no like ?";
 			return await executeQuery(sqlString,[search+"%"]);
 		}
-		
+		this.getAppreciationLogs=async(search,endDate)=>{
+			let sqlString="select ";
+			sqlString+="brief_desc,";
+			sqlString+="category_name,";
+			sqlString+="system_name,";
+			sqlString+="reference_no,";
+			sqlString+="remark,";
+			sqlString+="CONCAT(is_Compliance,";
+			sqlString+="		'/',";
+			sqlString+="	action_type,"; 
+			sqlString+="	case when minute_to_complete is null then '' else concat('/',minute_to_complete) end,";
+			sqlString+="	case when is_Solved_By_COSS is null then '' else concat('/',is_Solved_By_COSS) end";
+			sqlString+=") as compact ";			
+			sqlString+="from incident a inner join system_concerned b on a.system_id=b.system_id ";
+			sqlString+="inner join incident_category c on a.category_id=c.category_id ";
+			sqlString+="where reference_no like ? and ";
+			sqlString+="reference_no <> ? ";
+			sqlString+="order by reference_no";
+			return await executeQuery(sqlString,[search+"%",endDate]);
+		}
 		this.getCategoryList=async()=>{
 			let sqlString ="select * from incident_category order by category_name desc";
 			return await executeQuery(sqlString);
