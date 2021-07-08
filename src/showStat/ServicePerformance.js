@@ -1,37 +1,30 @@
 export default function ServicePerformance(props) {
     let a1SystemServicePerformanceSummary=[];
     let nonA1SystemServicePerformanceSummary=[];
-    let sum = { H: 0, H_PRE: 0, P: 0, P_PRE: 0, S: 0, S_PRE: 0 };
     for (
         let i = 0;
-        i < props.a1SystemServicePerformanceSummary.length;
+        i < props.a1SystemServicePerformanceSummary.systemSummary.length;
         i++
     ) {
         a1SystemServicePerformanceSummary.push(
             <tr key={"a1SystemServicePerformanceSummary_" + i}>
-              <td className="text-left">{props.a1SystemServicePerformanceSummary[i].system_name}</td>
-              <td>{props.a1SystemServicePerformanceSummary[i].H}</td>
+              <td className="text-left">{props.a1SystemServicePerformanceSummary.systemSummary[i].system_name}</td>
+              <td>{props.a1SystemServicePerformanceSummary.systemSummary[i].H}</td>
               <td>0</td>
-              <td>{props.a1SystemServicePerformanceSummary[i].H}</td>
-              <td>{props.a1SystemServicePerformanceSummary[i].H_PRE}</td>
-              <td>{props.a1SystemServicePerformanceSummary[i].S}</td>
+              <td>{props.a1SystemServicePerformanceSummary.systemSummary[i].H}</td>
+              <td>{props.a1SystemServicePerformanceSummary.systemSummary[i].H_PRE}</td>
+              <td>{props.a1SystemServicePerformanceSummary.systemSummary[i].S}</td>
               <td>0</td>
-              <td>{props.a1SystemServicePerformanceSummary[i].S}</td>
-              <td>{props.a1SystemServicePerformanceSummary[i].S_PRE}</td>
-              <td>{props.a1SystemServicePerformanceSummary[i].P}</td>
+              <td>{props.a1SystemServicePerformanceSummary.systemSummary[i].S}</td>
+              <td>{props.a1SystemServicePerformanceSummary.systemSummary[i].S_PRE}</td>
+              <td>{props.a1SystemServicePerformanceSummary.systemSummary[i].P}</td>
               <td>0</td>
-              <td>{props.a1SystemServicePerformanceSummary[i].P}</td>
-              <td>{props.a1SystemServicePerformanceSummary[i].P_PRE}</td>
+              <td>{props.a1SystemServicePerformanceSummary.systemSummary[i].P}</td>
+              <td>{props.a1SystemServicePerformanceSummary.systemSummary[i].P_PRE}</td>
               <td>0/0</td>
               <td>0/0</td>
             </tr>
-          );
-          sum.H += props.a1SystemServicePerformanceSummary[i].H;
-          sum.H_PRE += props.a1SystemServicePerformanceSummary[i].H_PRE;
-          sum.S += props.a1SystemServicePerformanceSummary[i].S;
-          sum.S_PRE += props.a1SystemServicePerformanceSummary[i].S_PRE;
-          sum.P += props.a1SystemServicePerformanceSummary[i].P;
-          sum.P_PRE += props.a1SystemServicePerformanceSummary[i].P_PRE;
+          );         
     }
     a1SystemServicePerformanceSummary.push(
         <tr
@@ -41,71 +34,64 @@ export default function ServicePerformance(props) {
           }
         >
           <td className="text-right">Total</td>
-          <td>{sum.H}</td>
+          <td>{props.a1SystemServicePerformanceSummary.SUM_H}</td>
           <td>0</td>
-          <td>{sum.H}</td>
-          <td>{sum.H_PRE}</td>
-          <td>{sum.S}</td>
+          <td>{props.a1SystemServicePerformanceSummary.SUM_H}</td>
+          <td>{props.a1SystemServicePerformanceSummary.SUM_H_PRE}</td>
+          <td>{props.a1SystemServicePerformanceSummary.SUM_S}</td>
           <td>0</td>
-          <td>{sum.S}</td>
-          <td>{sum.S_PRE}</td>
-          <td>{sum.P}</td>
+          <td>{props.a1SystemServicePerformanceSummary.SUM_S}</td>
+          <td>{props.a1SystemServicePerformanceSummary.SUM_S_PRE}</td>
+          <td>{props.a1SystemServicePerformanceSummary.SUM_P}</td>
           <td>0</td>
-          <td>{sum.P}</td>
-          <td>{sum.P_PRE}</td>
+          <td>{props.a1SystemServicePerformanceSummary.SUM_P}</td>
+          <td>{props.a1SystemServicePerformanceSummary.SUM_P_PRE}</td>
           <td>0/0</td>
           <td>0/0</td>
         </tr>
       );
-      sum = { H: 0, H_PRE: 0, P: 0, P_PRE: 0, S: 0, S_PRE: 0 };
       for (
         let i = 0;
-        i < props.nonA1SystemServicePerformanceSummary.length;
+        i < props.nonA1SystemServicePerformanceSummary.systemSummary.length;
         i++
       ) {
         nonA1SystemServicePerformanceSummary.push(
           <tr key={"nonA1SystemServicePerformanceSummary_" + i}>
             <td className="text-left">
-              {props.nonA1SystemServicePerformanceSummary[i].system_name}
+              {props.nonA1SystemServicePerformanceSummary.systemSummary[i].system_name}
             </td>
-            <td>{props.nonA1SystemServicePerformanceSummary[i].H}</td>
+            <td>{props.nonA1SystemServicePerformanceSummary.systemSummary[i].H}</td>
             <td>0</td>
-            <td>{props.nonA1SystemServicePerformanceSummary[i].H}</td>
-            <td>{props.nonA1SystemServicePerformanceSummary[i].H_PRE}</td>
-            <td>{props.nonA1SystemServicePerformanceSummary[i].S}</td>
+            <td>{props.nonA1SystemServicePerformanceSummary.systemSummary[i].H}</td>
+            <td>{props.nonA1SystemServicePerformanceSummary.systemSummary[i].H_PRE}</td>
+            <td>{props.nonA1SystemServicePerformanceSummary.systemSummary[i].S}</td>
             <td>0</td>
-            <td>{props.nonA1SystemServicePerformanceSummary[i].S}</td>
-            <td>{props.nonA1SystemServicePerformanceSummary[i].S_PRE}</td>
-            <td>{props.nonA1SystemServicePerformanceSummary[i].P}</td>
+            <td>{props.nonA1SystemServicePerformanceSummary.systemSummary[i].S}</td>
+            <td>{props.nonA1SystemServicePerformanceSummary.systemSummary[i].S_PRE}</td>
+            <td>{props.nonA1SystemServicePerformanceSummary.systemSummary[i].P}</td>
             <td>0</td>
-            <td>{props.nonA1SystemServicePerformanceSummary[i].P}</td>
-            <td>{props.nonA1SystemServicePerformanceSummary[i].P_PRE}</td>
+            <td>{props.nonA1SystemServicePerformanceSummary.systemSummary[i].P}</td>
+            <td>{props.nonA1SystemServicePerformanceSummary.systemSummary[i].P_PRE}</td>
             <td>0/0</td>
             <td>0/0</td>
           </tr>
-        );
-        sum.H += props.nonA1SystemServicePerformanceSummary[i].H;
-        sum.H_PRE += props.nonA1SystemServicePerformanceSummary[i].H_PRE;
-        sum.S += props.nonA1SystemServicePerformanceSummary[i].S;
-        sum.S_PRE += props.nonA1SystemServicePerformanceSummary[i].S_PRE;
-        sum.P += props.nonA1SystemServicePerformanceSummary[i].P;
-        sum.P_PRE += props.nonA1SystemServicePerformanceSummary[i].P_PRE;
+        );     
       }
       nonA1SystemServicePerformanceSummary.push(
         <tr key={"nonA1SystemServicePerformanceSummary_" + props.nonA1SystemServicePerformanceSummary.length}>
           <td className="text-right">Total</td>
-          <td>{sum.H}</td>
+          <td>{props.nonA1SystemServicePerformanceSummary.SUM_H}</td>
           <td>0</td>
-          <td>{sum.H}</td>
-          <td>{sum.H_PRE}</td>
-          <td>{sum.S}</td>
+          <td>{props.nonA1SystemServicePerformanceSummary.SUM_H}</td>
+          <td>{props.nonA1SystemServicePerformanceSummary.SUM_H_PRE}</td>
+          <td>{props.nonA1SystemServicePerformanceSummary.SUM_S}</td>
           <td>0</td>
-          <td>{sum.S}</td>
-          <td>{sum.S_PRE}</td>
-          <td>{sum.P}</td>
+          <td>{props.nonA1SystemServicePerformanceSummary.SUM_S}</td>
+          <td>{props.nonA1SystemServicePerformanceSummary.SUM_S_PRE}</td>
+          <td>{props.nonA1SystemServicePerformanceSummary.SUM_P}</td>
           <td>0</td>
-          <td>{sum.P}</td>
-          <td>{sum.P_PRE}</td>
+          <td>{props.nonA1SystemServicePerformanceSummary.SUM_P}</td>
+          <td>{props.nonA1SystemServicePerformanceSummary.SUM_P_PRE}</td>
           <td>0/0</td>
           <td>0/0</td>
         </tr>

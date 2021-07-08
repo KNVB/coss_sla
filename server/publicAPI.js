@@ -23,16 +23,31 @@ class PublicAPI{
             let PizZip = require('pizzip');
             let search =Number(req.query.year)*100+Number(req.query.month);
             let fileName="COSS SLA Monthly Report "+search+".docx";
-            let content = fs.readFileSync(path.resolve(__dirname, 'template.docx'), 'binary');
-            let zip = new PizZip(content);
-            let doc = new Docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
-            let statData=await this.getStatData(req.query.year,req.query.month);
-            statData.reportMonth=monthFullName[Number(req.query.month)]+ " "+req.query.year;
-            doc.setData(statData);
-            doc.render();
-	        let buf = doc.getZip().generate({type: 'nodebuffer'});
-	        fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
-            res.download(path.resolve(__dirname, 'output.docx'),fileName.toString());
+            try{
+                let content = fs.readFileSync(path.resolve(__dirname, 'template.docx'), 'binary');
+                let zip = new PizZip(content);
+                let doc = new Docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
+                let statData=await this.getStatData(req.query.year,req.query.month);
+                statData.reportMonth=monthFullName[Number(req.query.month)]+ " "+req.query.year;
+                doc.setData(statData);
+                doc.render();
+                let buf = doc.getZip().generate({type: 'nodebuffer'});
+                fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
+                res.download(path.resolve(__dirname, 'output.docx'),fileName.toString());
+            }catch (error){
+                console.log("Something wrong when generating monthly report.");
+                function replaceErrors(key, value) {
+                    if (value instanceof Error) {
+                        return Object.getOwnPropertyNames(value).reduce(function(error, key) {
+                            error[key] = value[key];
+                            return error;
+                        }, {});
+                    }
+                    return value;
+                }
+                console.log(JSON.stringify({error: error}, replaceErrors));
+                res.sendStatus(500);
+            }            
         }
         
         this.getIncidentStat=async(req,res)=>{
@@ -41,21 +56,38 @@ class PublicAPI{
         this.getStatData=async(year,month)=>{
             let search =Number(year)*100+Number(month);
             let dboObj=new DBO();
-            let statData={
-                a1SystemServicePerformanceSummary:await this.getA1SystemServicePerformanceSummary(dboObj,search),
-                actionTypeSummary:await this.getActionTypeSummary(dboObj,search),
-                incidentSummary:await this.getIncidentSummary(dboObj,search),
-                isSolvedByCOSSSummary:await this.getIsSolvedByCOSSSummary(dboObj,search),
-                nonA1SystemServicePerformanceSummary:await this.getNonA1SystemServicePerformanceSummary(dboObj,search)
+            try{
+                let statData={
+                    a1SystemServicePerformanceSummary:await this.getA1SystemServicePerformanceSummary(dboObj,search),
+                    actionTypeSummary:await this.getActionTypeSummary(dboObj,search),
+                    incidentSummary:await this.getIncidentSummary(dboObj,search),
+                    isSolvedByCOSSSummary:await this.getIsSolvedByCOSSSummary(dboObj,search),
+                    logs:[],
+                    nonA1SystemServicePerformanceSummary:await this.getNonA1SystemServicePerformanceSummary(dboObj,search)
+                }
+                return statData;
+            }catch (error){
+                console.log("Something wrong when getting statistic:"+error.stack);
             }
-            return statData;
+            finally{
+				dboObj.close();
+			};      
+
         }
 //---------------------------------------------------------------------------------------------------- 
         this.getA1SystemServicePerformanceSummary=async(dboObj,search)=>{
             let queryResult=await dboObj.getA1SystemServicePerformanceSummary(search);
-            let a1SystemServicePerformanceSummary=[];
+            let a1SystemServicePerformanceSummary={
+                systemSummary:[],
+                SUM_H:0,
+                SUM_H_PRE:0,
+                SUM_P:0,
+                SUM_P_PRE:0,
+                SUM_S:0,
+                SUM_S_PRE:0,
+            };
             queryResult.forEach(result => {
-                a1SystemServicePerformanceSummary.push(
+                a1SystemServicePerformanceSummary.systemSummary.push(
                     {
                         system_name:result.system_name,
                         H:Number(result.H),
@@ -66,12 +98,12 @@ class PublicAPI{
                         P_PRE:Number(result.P_pre),
                     }
                 )
-                a1SystemServicePerformanceSummary.SUM_A1H+=Number(result.H);
-                a1SystemServicePerformanceSummary.SUM_A1H_PRE+=Number(result.H_pre);
-                a1SystemServicePerformanceSummary.SUM_A1P+=Number(result.P);
-                a1SystemServicePerformanceSummary.SUM_A1P_PRE+=Number(result.P_pre);
-                a1SystemServicePerformanceSummary.SUM_A1S+=Number(result.S);
-                a1SystemServicePerformanceSummary.SUM_A1S_PRE+=Number(result.S_pre);
+                a1SystemServicePerformanceSummary.SUM_H+=Number(result.H);
+                a1SystemServicePerformanceSummary.SUM_H_PRE+=Number(result.H_pre);
+                a1SystemServicePerformanceSummary.SUM_P+=Number(result.P);
+                a1SystemServicePerformanceSummary.SUM_P_PRE+=Number(result.P_pre);
+                a1SystemServicePerformanceSummary.SUM_S+=Number(result.S);
+                a1SystemServicePerformanceSummary.SUM_S_PRE+=Number(result.S_pre);
             });
             return a1SystemServicePerformanceSummary;
         }
@@ -79,11 +111,12 @@ class PublicAPI{
             let queryResult=await dboObj.getActionTypeSummary(search);
             let actionTypeSummary={
                 P:Number(queryResult[0].P),
-                R:Number(queryResult[0].R)
+                R:Number(queryResult[0].R)                
             };
             actionTypeSummary.actionTypeRatio=Number(
                 actionTypeSummary.P / actionTypeSummary.R
             ).toFixed(2) + ":1";
+            actionTypeSummary.total= actionTypeSummary.P + actionTypeSummary.R;
             return actionTypeSummary;
         }
         this.getIncidentSummary=async(dboObj,search)=>{
@@ -108,11 +141,18 @@ class PublicAPI{
            return statData;
         }
         this.getNonA1SystemServicePerformanceSummary=async(dboObj,search)=>{
-            let nonA1SystemServicePerformanceSummary=[];
             let queryResult=await dboObj.getNonA1SystemServicePerformanceSummary(search);
-
+            let nonA1SystemServicePerformanceSummary={
+                systemSummary:[],
+                SUM_H:0,
+                SUM_H_PRE:0,
+                SUM_P:0,
+                SUM_P_PRE:0,
+                SUM_S:0,
+                SUM_S_PRE:0,
+            };
             queryResult.forEach(result => {
-                nonA1SystemServicePerformanceSummary.push(
+                nonA1SystemServicePerformanceSummary.systemSummary.push(
                     {
                         system_name:result.system_name,
                         H:Number(result.H),
