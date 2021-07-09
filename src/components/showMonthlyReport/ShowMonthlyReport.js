@@ -1,11 +1,12 @@
-import {Fragment, useEffect, useState } from "react";
+import {Fragment, forwardRef, useEffect, useState } from "react";
 import AppreciationLogs from './AppreciationLogs';
+import DatePicker from "react-datepicker";
 import IncidentSummary from './IncidentSummary';
 import ServicePerformance from './ServicePerformance';
-import IncidentUtil from "../utility/IncidentUtil";
-import MonthPicker from "../monthPicker/MonthPicker";
-import "./ShowStat.css";
-export default function ShowStat() {
+import IncidentUtil from "../../utility/IncidentUtil";
+import "./ShowMonthlyReport.css";
+import "react-datepicker/dist/react-datepicker.css";
+export default function ShowMonthlyReport() {
     const [reportMonth, setReportMonth] = useState(new Date());
     const [statData, setStatData] = useState();
     useEffect(() => {
@@ -23,6 +24,15 @@ export default function ShowStat() {
     let updateReportMonth = (month) => {
         setReportMonth(month);
     };
+    let bb=(e,click)=>{
+        e.preventDefault();
+        click();
+    }
+    const CustomInput = forwardRef(({ value, onClick }, ref) => (
+        <a href="./" onClick={(e)=>bb(e,onClick)} ref={ref}>
+          {value}
+        </a>
+      ));
     return (
         <div className="showStat p-1">
             <div className="title text-center">Monthly Service Pledge Compliance Report</div>
@@ -30,9 +40,15 @@ export default function ShowStat() {
                 <li className="title">
                     <div className="d-flex flex-row align-items-center">
                         <div className="pr-1">Report Period:</div>
-                        <MonthPicker
-                            onChange={updateReportMonth}
-                            minDate={minDate} />
+                        <DatePicker
+                            customInput={<CustomInput/>}
+                            dateFormat="MMMM yyyy"
+                            onChange={(date) => updateReportMonth(date)}                                                       
+                            minDate={minDate}
+                            selected={reportMonth}
+                            showMonthYearPicker
+                            showFullMonthYearPicker                            
+                            />
                     </div>
                 </li>
                 {statData &&
@@ -54,6 +70,7 @@ export default function ShowStat() {
                     </Fragment>
                 }
             </ol>
+            <a href="/">Back to Main Menu</a>
         </div>
     );
 }

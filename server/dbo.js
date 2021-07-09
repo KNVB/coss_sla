@@ -7,6 +7,19 @@ class DBO
 	
 		const mysql = require('mysql2');
         const connection = mysql.createConnection(dbConfig);
+		this.generateMonthlySummaryData=async(search)=>{
+			let sqlString ="replace into incident_summary (system_id,h_count,s_count,p_count,month) ";
+			sqlString+="select ";
+			sqlString+="a.system_id,";
+			sqlString+="sum(case when category_id='H' then 1 else 0 end) as h_count,";
+			sqlString+="sum(case when category_id='S' then 1 else 0 end) as s_count,";
+			sqlString+="sum(case when category_id='P' then 1 else 0 end) as p_count,";
+			sqlString+="? ";
+			sqlString+="from system_concerned a left join incident b on a.system_id=b.system_id ";
+			sqlString+="and reference_no like ?";
+			sqlString+="group by a.system_id";
+			return await executeQuery(sqlString,[search,search+"%"]);
+		}
 		this.getA1SystemServicePerformanceSummary=async(search)=>{
 			return await this.getServicePerformanceSummary(search,'Y');
 		}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import IncidentUtil from './utility/IncidentUtil';
-import SystemUtil from './utility/SystemUtil';
+import IncidentUtil from '../utility/IncidentUtil';
+import SystemUtil from '../utility/SystemUtil';
 export default function InputSystemBaseCount(props) {
     const [systemBaseCountList, setSystemBaseCountList] = useState([]);
     const [tableRowList, setTableRowList] = useState([]);

@@ -8,10 +8,11 @@ export default function MainMenu(props) {
             <Row>
                 <Col md={12} lg={12} sm={12} xl={12} xs={12}>
                     <ul>
+                        
                         <li><a href="/inputIncident">Input Incident</a></li>
-                        <li><a href="/inputSystemBaseCount">Input System Base Count</a></li>
                         <li><a href="/listIncident">List Incident</a></li>
-                        <li><a href="/showStat">Show Stat</a></li>
+                        <li><a href="/generateMonthlyReport">Generate Monthly Report</a></li>
+                        <li><a href="/showMonthlyReport">Show Monthly Report</a></li>
                     </ul>
                 </Col>
             </Row>

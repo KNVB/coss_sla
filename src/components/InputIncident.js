@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Incident from "./utility/Incident";
-import IncidentUtil from './utility/IncidentUtil';
+import Incident from "../utility/Incident";
+import IncidentUtil from '../utility/IncidentUtil';
 export default function InputIncident(props) {
   
   const [categoryOptionList,setCategoryOptionList]=useState([]);
