@@ -32,6 +32,13 @@ publicAPIRouter.get('/getSystemList',publicAPI.getSystemList);
 publicAPIRouter.post('/saveBaseCount',publicAPI.saveBaseCount);
 publicAPIRouter.post('/saveIncidentList',publicAPI.saveIncidentList);
 
+if (process.env.NODE_ENV==="production"){
+    const path = require('path');
+    app.use(express.static(path.resolve(__dirname, '../build')));
+    app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../build', 'index.html'));
+    });
+}
 httpServer.listen(httpServerPort, function() {
     console.log('server up and running at %s port', httpServerPort);
 });
