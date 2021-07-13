@@ -29,7 +29,6 @@ publicAPIRouter.get('/generateMonthlySummaryData',publicAPI.generateMonthlySumma
 publicAPIRouter.get('/getCategoryList',publicAPI.getCategoryList);
 publicAPIRouter.get('/getIncidentStat',publicAPI.getIncidentStat);
 publicAPIRouter.get('/getSystemList',publicAPI.getSystemList);
-publicAPIRouter.post('/saveBaseCount',publicAPI.saveBaseCount);
 publicAPIRouter.post('/saveIncidentList',publicAPI.saveIncidentList);
 
 if (process.env.NODE_ENV==="production"){
