@@ -22,6 +22,7 @@ export default function InputIncident(props) {
     .then(saveResult=>{
       if (saveResult.result){
         alert("Incident Saved to Db successfully");
+        setIncidentDataList([defaultIncident]);
       }
     })
   }
