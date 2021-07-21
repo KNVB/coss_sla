@@ -17,14 +17,20 @@ export default function InputIncident(props) {
   };
   let saveToDb=async(e)=>{
     e.preventDefault();
+    /*
     let incidentUtil=new IncidentUtil();
     incidentUtil.saveIncidentList(incidentList)
     .then(saveResult=>{
       if (saveResult.result){
         alert("Incident Saved to Db successfully");
-        setIncidentDataList([defaultIncident]);
+            
       }
     })
+    */
+    let incident = new Incident();
+    incident.catId=categoryOptionList[0].props.value;
+    incident.systemId=systemOptionList[0].props.value;
+    setIncidentDataList([incident]);
   }
   let updateChange=(e,index)=>{
     let temp = JSON.parse(JSON.stringify(incidentList)); 
@@ -37,7 +43,6 @@ export default function InputIncident(props) {
   }
   useEffect(()=>{
     let incidentUtil=new IncidentUtil();  
-    
     const getData = async () => {
         let incident = new Incident();
         let temp=[];
@@ -95,7 +100,6 @@ export default function InputIncident(props) {
                 {systemOptionList}
             </select>
         </td>
-
         <td>
             <textarea 
                 name="briefDesc"
