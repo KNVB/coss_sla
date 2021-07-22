@@ -17,21 +17,17 @@ export default function InputIncident(props) {
   };
   let saveToDb=async(e)=>{
     e.preventDefault();
-    /*
     let incidentUtil=new IncidentUtil();
     incidentUtil.saveIncidentList(incidentList)
     .then(saveResult=>{
       if (saveResult.result){
         alert("Incident Saved to Db successfully");
-            
+        let incident = new Incident();
+        incident.catId=categoryOptionList[0].props.value;
+        incident.systemId=systemOptionList[0].props.value;
+        setIncidentDataList([incident]);    
       }
     })
-    */
-    let incident = new Incident();
-    //incident.catId=categoryOptionList[0].props.value;
-    //incident.systemId=systemOptionList[0].props.value;
-    setIncidentDataList([]);
-
   }
   let updateChange=(e,index)=>{
     let temp = JSON.parse(JSON.stringify(incidentList)); 
