@@ -42,6 +42,14 @@ class PublicAPI {
                 let doc = new Docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
                 let statData = await this.getStatData(req.query.year, req.query.month);
                 statData.reportMonth = monthFullName[Number(req.query.month)] + " " + req.query.year;
+                for (let i=0;i<statData.logs.length;i++){
+                    let log=statData.logs[i];
+                    log.remark=log.remark.split("\n");
+                    for (let j=0;j<log.remark.length;j++){
+                        log.remark[j]=log.remark[j].trim();
+                    }
+                    statData.logs[i]=log;
+                }
                 doc.setData(statData);
                 doc.render();
                 let buf = doc.getZip().generate({ type: 'nodebuffer' });
