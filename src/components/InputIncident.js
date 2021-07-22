@@ -28,9 +28,10 @@ export default function InputIncident(props) {
     })
     */
     let incident = new Incident();
-    incident.catId=categoryOptionList[0].props.value;
-    incident.systemId=systemOptionList[0].props.value;
-    setIncidentDataList([incident]);
+    //incident.catId=categoryOptionList[0].props.value;
+    //incident.systemId=systemOptionList[0].props.value;
+    setIncidentDataList([]);
+
   }
   let updateChange=(e,index)=>{
     let temp = JSON.parse(JSON.stringify(incidentList)); 
@@ -105,7 +106,7 @@ export default function InputIncident(props) {
                 name="briefDesc"
                 onChange={(e)=>{ updateChange(e,i)}} 
                 required 
-                value={incidentList.briefDesc} />
+                value={incident.briefDesc} />
         </td>
         <td>
           <input
@@ -113,14 +114,14 @@ export default function InputIncident(props) {
             onChange={(e)=>{ updateChange(e,i)}}
             required
             type="text"
-            value={incidentList.compactData}
+            value={incident.compactData}
           />
         </td>
         <td>
             <textarea 
                 name="remark"
                 onChange={(e)=>{ updateChange(e,i)}} 
-                required value={incidentList.remark} />
+                required value={incident.remark} />
         </td>
       </tr>
     );
@@ -144,7 +145,7 @@ export default function InputIncident(props) {
           {row}
           <tr>
             <td colSpan="3">
-              <button onClick={addRow}>Add Button</button>
+              <button onClick={addRow}>Add Row</button>
             </td>
             <td colSpan="3">
               <button onClick={saveToDb}>Save</button>
