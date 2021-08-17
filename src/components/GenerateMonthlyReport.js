@@ -11,7 +11,7 @@ export default function GenerateMonthlyReport(props){
     let genData=async(e)=>{
         let incidentUtil = new IncidentUtil();
         try{
-            let result = await incidentUtil.generateMonthlySummaryData(
+            await incidentUtil.generateMonthlySummaryData(
                 reportMonth.getFullYear(),
                 reportMonth.getMonth() + 1
             );
@@ -23,7 +23,7 @@ export default function GenerateMonthlyReport(props){
     let genReport=async(e)=>{
         let incidentUtil = new IncidentUtil();
         try{
-            let result = await incidentUtil.generateMonthlyReport(
+            await incidentUtil.generateMonthlyReport(
                 reportMonth.getFullYear(),
                 reportMonth.getMonth() + 1
             );
