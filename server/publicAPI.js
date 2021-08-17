@@ -54,8 +54,7 @@ class PublicAPI {
                 doc.render();
                 let buf = doc.getZip().generate({ type: 'nodebuffer' });
                 fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
-                //res.download(path.resolve(__dirname, 'output.docx'), fileName.toString());
-                res.download(path.resolve(__dirname, 'output.docx'));
+                res.download(path.resolve(__dirname, 'output.docx'), fileName.toString());
             } catch (error) {
                 console.log("Something wrong when generating monthly report.");
                 function replaceErrors(key, value) {
