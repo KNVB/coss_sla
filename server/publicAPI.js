@@ -52,7 +52,7 @@ class PublicAPI {
                 }
                 doc.setData(statData);
                 doc.render();
-                let buf = doc.getZip().generate({ type: 'nodebuffer' });
+                let buf = doc.getZip().generate({ type: 'nodebuffer', compression: "DEFLATE" });
                 fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
                 res.download(path.resolve(__dirname, 'output.docx'), fileName.toString());
             } catch (error) {
