@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^12.8.3",
     "bootstrap": "^4.6.0",
     "cookie-parser": "^1.4.5",
+	"cross-env": "^7.0.3",
     "docxtemplater": "^3.22.3",
     "dotenv-flow": "^3.2.0",
     "express": "^4.17.1",
@@ -28,9 +29,9 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "server": "nodemon -r dotenv/config ./server/index.js",
-    "dev": "set NODE_ENV=development&&run-p server start",
-    "prod": "set NODE_ENV=production&&run-p server build",
+	"dev": "set NODE_ENV=development&&run-p server start",    
+	"prod": "cross-env NODE_ENV=production npm run server",
+    "server": "nodemon -r dotenv/config ./server/index.js",    
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
